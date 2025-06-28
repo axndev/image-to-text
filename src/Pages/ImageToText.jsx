@@ -111,12 +111,22 @@ export default function ImageToText() {
 
   return (
     <>
+      <Helmet>
+        <title>Pro Image to Text - Free Online Image to Text Converter</title>
+        <meta name="description" content="Pro Image to Text is a free online OCR tool that extracts text from images in seconds. Fast, accurate, secure." />
+        <meta name="keywords" content="image to text, online OCR, extract text from image, free OCR tool" />
+        <meta property="og:title" content="Pro Image to Text" />
+        <meta property="og:description" content="Convert images to editable text for free — fast online OCR tool." />
+        <meta property="og:image" content="https://YOUR_DOMAIN/og-image.png" />
+        <meta property="og:url" content="https://YOUR_DOMAIN/" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
       <div className={cn("min-h-auto", darkMode ? "bg-gray-900 mb-10 text-white" : "bg-white text-black") + " max-w-5xl mx-auto p-6 transition-colors duration-300 mt-5 md:mt-20"}>
         <div className="flex justify-between items-center mb-6 ">
-          
+
           <div className="flex-shrink-0 flex items-center gap-3">
-          <img src="/logo.png" className='max-w-10' alt="" />
-          <h1 className="text-3xl font-bold">Pro Image to Text</h1>
+            <img src="/logo.png" className='max-w-10' alt="" />
+            <h1 className="text-3xl font-bold">Pro Image to Text</h1>
           </div>
           <div className="hidden">
             <Button onClick={toggleTheme} variant="ghost">
