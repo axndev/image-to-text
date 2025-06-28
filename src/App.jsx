@@ -9,6 +9,8 @@ import About from './Pages/About';
 import PrivacyPolicy from './Pages/PrivacyPolicy';
 import TermsOfService from './Pages/TermsOfService';
 import Contact from './Pages/Contact';
+import Blog from './Pages/Blog';
+import Article from './Pages/Article';
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<Article />} />
           </Routes>
         </main>
         <Footer />

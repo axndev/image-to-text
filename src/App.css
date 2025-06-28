@@ -2,4 +2,14 @@
 html, body, #root {
     height: 100%;
   }
-  
+@layer base{
+  h2{
+    @apply text-xl md:text-2xl my-4 font-semibold;
+  }
+  ul{
+    @apply space-y-2 list-disc ml-6
+  }
+  ol{
+    @apply list-decimal space-y-2  ml-6
+  }
+}
