@@ -13,7 +13,7 @@ export default function Blog() {
     return (
         <section className="max-w-5xl mt-5 md:mt-20 mx-auto p-6 prose dark:prose-invert">
             <h1 className="text-3xl font-bold mb-6">Blog</h1>
-            <ul className="space-y-6">
+            <ul className="space-y-6 m-0">
                 {articles.map((article) => (
                     <li key={article.slug} className="border-b pb-4 flex flex-col md:flex-row gap-4 items-center">
                         <img

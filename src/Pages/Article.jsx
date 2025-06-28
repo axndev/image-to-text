@@ -69,7 +69,7 @@ export default function Article() {
             <img
               src={article.image}
               alt={article.title}
-              className="w-full h-auto rounded my-8 shadow"
+              className="w-full h-full rounded my-8 shadow"
             />
           )}
     
