@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import './App.css';
 import './cropper-style.css';
 import ImageToText from './Pages/ImageToText';
@@ -11,10 +11,12 @@ import Contact from './Pages/Contact';
 import Blog from './Pages/Blog';
 import Article from './Pages/Article';
 import ReactGA from "react-ga4";
-ReactGA.initialize("G-T4N8B78V44"); // paste YOUR Measurement ID here
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 
+// ✅ Initialize GA
+ReactGA.initialize("G-T4N8B78V44");
+
+// ✅ Page Tracking Hook
 function usePageTracking() {
   const location = useLocation();
 
@@ -22,12 +24,22 @@ function usePageTracking() {
     ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
   }, [location]);
 }
-function App() {
+
+// ✅ Wrapper to run tracking inside Router context
+function GAListener() {
   usePageTracking();
+  return null;
+}
+
+function App() {
   return (
     <Router>
+      <GAListener />
+
       <div className="flex flex-col min-h-screen">
         <Navbar />
+
+        {/* ✅ Use main for proper page content layout */}
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<ImageToText />} />
@@ -39,11 +51,11 @@ function App() {
             <Route path="/blog/:slug" element={<Article />} />
           </Routes>
         </main>
+
         <Footer />
       </div>
     </Router>
   );
 }
-
 
 export default App;

@@ -4,6 +4,8 @@ import { Button } from '../Components/ui/button';
 import { Card, CardContent } from '../Components/ui/card';
 import { Loader2, Copy, UploadCloud, Moon, Sun, Download } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { Helmet } from 'react-helmet';
+
 import Cropper from 'react-easy-crop';
 import getCroppedImg from '../lib/cropImage';
 
