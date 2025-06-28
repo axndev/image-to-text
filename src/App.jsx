@@ -15,7 +15,7 @@ import Article from './Pages/Article';
 function App() {
   return (
     <Router>
-      <div className="flex flex-col md:min-h-screen">
+      <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow">
           <Routes>
