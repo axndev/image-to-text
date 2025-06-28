@@ -1,6 +1,6 @@
 export default function Footer() {
     return (
-      <footer className="mt-12 py-6 text-center border-t border-gray-300 dark:border-gray-700 flex gap-2 items-center  flex-col md:flex-row justify-center ">
+      <footer className="mt-12 p-6 text-center border-t border-gray-300 dark:border-gray-700 flex gap-2 items-center  flex-col md:flex-row justify-center ">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           © {new Date().getFullYear()} Pro Image to Text. Built by{' '}
           <a
