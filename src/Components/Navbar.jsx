@@ -40,7 +40,7 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden px-2 pb-3 space-y-1">
           <Link to="/" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Home</Link>
-          <Link to="/blog"  onClick={handleLinkClick}className="text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Blog</Link>
+          <Link to="/blog"  onClick={handleLinkClick}className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Blog</Link>
           <Link to="/about" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">About</Link>
           <Link to="/privacy-policy" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Privacy</Link>
           <Link to="/terms" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Terms</Link>
