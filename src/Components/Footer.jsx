@@ -14,15 +14,15 @@ export default function Footer() {
           </a>
         </p>
          <span className="hidden md:block">|</span> 
-        <a
-          href="https://www.buymeacoffee.com/yourusername"
+         <p className="text-sm text-gray-600">Want to support? Hire me for web dev     <a
+          href="mailto:kaleemullahahsan0@gmail.com"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block text-sm font-medium"
           style={{ color: 'rgb(134 179 187)' }}
         >
-          ☕ Buy me a coffee
-        </a>
+          Email me
+        </a></p>
       </footer>
     );
   }
