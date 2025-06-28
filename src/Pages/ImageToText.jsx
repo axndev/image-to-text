@@ -1,3 +1,4 @@
+import Tesseract from 'tesseract.js';
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '../Components/ui/button';
 import { Card, CardContent } from '../Components/ui/card';
@@ -57,32 +58,35 @@ const onCropComplete = (_, croppedAreaPixels) => {
 
   const handleExtractText = async () => {
     if (!image) return alert('Please upload an image.');
-
+  
     setLoading(true);
     setText('');
     setError('');
-
-    const formData = new FormData();
-    formData.append('file', image);
-    formData.append('apikey', 'K85810093588957');
-    formData.append('language', language);
-
+  
     try {
-      const res = await fetch('https://api.ocr.space/parse/image', {
-        method: 'POST',
-        body: formData
-      });
-
-      const result = await res.json();
-      const parsed = result.ParsedResults?.[0]?.ParsedText;
-      if (parsed) setText(parsed);
-      else setError('No text found.');
+      const {
+        data: { text: extractedText }
+      } = await Tesseract.recognize(
+        image,
+        language,
+        {
+          logger: m => console.log(m) // Optional: shows OCR progress in console
+        }
+      );
+  
+      if (extractedText.trim()) {
+        setText(extractedText);
+      } else {
+        setError('No text found.');
+      }
     } catch (err) {
+      console.error(err);
       setError('Failed to extract text.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleCopyText = () => {
     navigator.clipboard.writeText(text).then(() => {
