@@ -15,12 +15,12 @@ export default function Navbar() {
     <nav className="bg-white dark:bg-gray-900 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex-shrink-0 flex items-center gap-3">
+        <Link to="/" className="flex-shrink-0 flex items-center gap-3">
             <img src="/logo.png" className="max-w-10" alt="Logo" />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
               ProImageToText
             </h1>
-          </div>
+          </Link>
           <div className="hidden md:flex space-x-4 items-center">
             <Link to="/" className="text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Home</Link>
             <Link to="/about" className="text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">About</Link>
