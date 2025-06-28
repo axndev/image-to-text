@@ -6,6 +6,11 @@ import { Button } from '../Components/ui/button';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Helper to close menu when clicking a link
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <nav className="bg-white dark:bg-gray-900 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,11 +38,11 @@ export default function Navbar() {
 
       {isOpen && (
         <div className="md:hidden px-2 pb-3 space-y-1">
-          <Link to="/" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Home</Link>
-          <Link to="/about" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">About</Link>
-          <Link to="/contact" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Contact</Link>
-          <Link to="/privacy-policy" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Privacy</Link>
-          <Link to="/terms" className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Terms</Link>
+          <Link to="/" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Home</Link>
+          <Link to="/about" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">About</Link>
+          <Link to="/contact" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Contact</Link>
+          <Link to="/privacy-policy" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Privacy</Link>
+          <Link to="/terms" onClick={handleLinkClick} className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Terms</Link>
         </div>
       )}
     </nav>
