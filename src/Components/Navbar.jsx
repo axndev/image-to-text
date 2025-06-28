@@ -16,9 +16,9 @@ export default function Navbar() {
             </h1>
           </div>
           <div className="hidden md:flex space-x-4 items-center">
-            <a href="/" className="text-gray-700 dark:text-gray-300 hover:text-blue-500">Home</a>
-            <a href="/about" className="text-gray-700 dark:text-gray-300 hover:text-blue-500">About</a>
-            <a href="/contact" className="text-gray-700 dark:text-gray-300 hover:text-blue-500">Contact</a>
+            <a href="/" className="text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Home</a>
+            <a href="/about" className="text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">About</a>
+            <a href="/contact" className="text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Contact</a>
           </div>
           <div className="flex md:hidden items-center">
             <Button variant="ghost" onClick={() => setIsOpen(!isOpen)} className="!shadow-none">

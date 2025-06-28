@@ -111,7 +111,7 @@ export default function ImageToText() {
 
   return (
     <>
-      <div className={cn("min-h-auto", darkMode ? "bg-gray-900 mb-10 text-white" : "bg-white text-black") + " max-w-3xl mx-auto p-6 transition-colors duration-300 mt-5 md:mt-20"}>
+      <div className={cn("min-h-auto", darkMode ? "bg-gray-900 mb-10 text-white" : "bg-white text-black") + " max-w-5xl mx-auto p-6 transition-colors duration-300 mt-5 md:mt-20"}>
         <div className="flex justify-between items-center mb-6 ">
           
           <div className="flex-shrink-0 flex items-center gap-3">
@@ -145,10 +145,10 @@ export default function ImageToText() {
           ref={dropRef}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
-          className="border-dashed border-2 border-gray-300 p-8 text-center mb-6 cursor-pointer hover:border-blue-500 transition"
+          className="border-dashed border-2 border-gray-300 p-8 md:p-18 text-center mb-6 cursor-pointer hover:border-[#A8DFE9] transition"
         >
           <label className="cursor-pointer block">
-            <UploadCloud className="mx-auto mb-2 text-blue-500" size={48} />
+            <UploadCloud className="mx-auto mb-2 text-[#A8DFE9]" size={48} />
             <span className="block mb-2">Drag & drop, paste with Ctrl+V or click to upload an image</span>
             <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
           </label>
@@ -163,7 +163,7 @@ export default function ImageToText() {
         )}
 
         <div className="flex flex-wrap gap-4 mb-4">
-          <Button onClick={handleExtractText} disabled={loading}>
+          <Button onClick={handleExtractText} disabled={loading} className="cursor-pointer !bg-[#A8DFE9]">
             {loading ? <><Loader2 className="animate-spin mr-2" /> Extracting...</> : 'Extract Text'}
           </Button>
           {text && (
@@ -189,7 +189,7 @@ export default function ImageToText() {
 
         {error && <div className="mt-4 text-red-600 font-medium">{error}</div>}
       </div>
-      <section className="max-w-3xl mx-auto md:mt-2 p-6 bg-white dark:bg-gray-900 ">
+      <section className="max-w-5xl mx-auto md:mt-2 p-6 bg-white dark:bg-gray-900 ">
         <h2 className="text-2xl font-bold mb-4 md:text-3xl">About Pro Image to Text</h2>
         <p className="mb-4 text-gray-700 dark:text-gray-300">
           Pro Image to Text is a free, fast, and accurate online tool that extracts text from images in seconds.
@@ -225,7 +225,7 @@ export default function ImageToText() {
         </div>
 
         <h3 className="text-xl font-semibold mb-2">Why Use Pro Image to Text?</h3>
-        <ul className="list-disc list-inside mb-6 text-gray-700 dark:text-gray-300">
+        <ul className="list-disc list-inside mb-6 text-gray-700 space-y-1.5 mt-5 dark:text-gray-300">
           <li><strong>Fast & Accurate:</strong> Get clean, editable text instantly.</li>
           <li><strong>Supports Multiple Languages:</strong> English, Arabic, Spanish, French, German, and more.</li>
           <li><strong>Free & Secure:</strong> Your images are never stored or shared.</li>
