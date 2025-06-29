@@ -1,12 +1,36 @@
-# React + Vite
+# ProImageToText
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**ProImageToText** is a free, modern online OCR (Optical Character Recognition) tool that converts images to editable text in seconds. Built with React and Tesseract.js, this simple web app helps users extract text from scanned documents, screenshots, handwritten notes, and more — with just a few clicks.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- ✅ Drag & Drop, Paste or Upload images  
+- ✅ Crop images before extracting text  
+- ✅ Supports multiple languages (English, Arabic, Spanish, French, German)  
+- ✅ Download or copy extracted text instantly  
+- ✅ Clean, responsive UI (Dark Mode included)  
+- ✅ Google Analytics integration for tracking  
+- ✅ SEO meta tags with `react-helmet`  
+- ✅ Built with modern React best practices  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📸 Demo
+
+![Demo Screenshot](/public/demo-image.png)  
+Try it live: [https://proimagetotext.netlify.app/](https://proimagetotext.netlify.app/)
+
+---
+
+## ⚙️ Tech Stack
+
+- **Frontend:** React, Vite (or CRA), Tailwind CSS / custom CSS
+- **OCR Engine:** [Tesseract.js](https://github.com/naptha/tesseract.js)
+- **Routing:** `react-router-dom`
+- **SEO:** `react-helmet`
+- **Analytics:** Google Analytics 4 (`react-ga4`)
+
+---
+
