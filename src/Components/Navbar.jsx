@@ -30,7 +30,7 @@ export default function Navbar() {
             <Link to="/contact" className="text-gray-700 dark:text-gray-300 hover:text-[#A8DFE9]">Contact</Link>
           </div>
           <div className="flex md:hidden items-center">
-            <Button variant="ghost" onClick={() => setIsOpen(!isOpen)} className="!shadow-none">
+            <Button variant="ghost" onClick={() => setIsOpen(!isOpen)} className="!shadow-none !bg-transparent">
               {isOpen ? <X /> : <Menu />}
             </Button>
           </div>

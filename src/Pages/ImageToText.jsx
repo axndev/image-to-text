@@ -1,31 +1,21 @@
 import Tesseract from 'tesseract.js';
 import React, { useState, useRef, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
+import { cn } from '../lib/utils';
+
 import { Button } from '../Components/ui/button';
 import { Card, CardContent } from '../Components/ui/card';
 import { Loader2, Copy, UploadCloud, Moon, Sun, Download } from 'lucide-react';
-import { cn } from '../lib/utils';
-import { Helmet } from 'react-helmet';
-
-import Cropper from 'react-easy-crop';
-import getCroppedImg from '../lib/cropImage';
 
 export default function ImageToText() {
   const [image, setImage] = useState(null);
-  const [croppedImage, setCroppedImage] = useState(null);
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState('eng');
-  const dropRef = useRef(null);
-  const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-  const [showCropper, setShowCropper] = useState(false);
-  const onCropComplete = (_, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  };
 
+
+  const dropRef = useRef(null);
 
   const handleImageChange = (e) => {
     setText('');
@@ -33,6 +23,7 @@ export default function ImageToText() {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
       setImage(file);
+      setShowCropper(true); // Open cropper immediately
     }
   };
 
@@ -43,6 +34,7 @@ export default function ImageToText() {
         const file = item.getAsFile();
         if (file) {
           setImage(file);
+          setShowCropper(true);
         }
       }
     }
@@ -53,31 +45,71 @@ export default function ImageToText() {
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
       setImage(file);
+      setShowCropper(true);
     }
   };
 
   const handleDragOver = (e) => e.preventDefault();
-
+  async function processImage(file) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+  
+        canvas.width = img.width;
+        canvas.height = img.height;
+  
+        ctx.drawImage(img, 0, 0);
+  
+        // ✅ Convert to grayscale
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < imgData.data.length; i += 4) {
+          const avg = (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]) / 3;
+          imgData.data[i] = avg;
+          imgData.data[i + 1] = avg;
+          imgData.data[i + 2] = avg;
+        }
+  
+        // ✅ Binarize: simple threshold
+        const threshold = 150;
+        for (let i = 0; i < imgData.data.length; i += 4) {
+          const v = imgData.data[i] > threshold ? 255 : 0;
+          imgData.data[i] = v;
+          imgData.data[i + 1] = v;
+          imgData.data[i + 2] = v;
+        }
+  
+        ctx.putImageData(imgData, 0, 0);
+  
+        canvas.toBlob(resolve);
+      };
+    });
+  }
+  
   const handleExtractText = async () => {
-    if (!image) return alert('Please upload an image.');
-
+    if (!image && !croppedImage) return alert('Please upload an image.');
+  
     setLoading(true);
     setText('');
     setError('');
-
+  
     try {
+      const imgToProcess = croppedImage || image;
+      const preprocessed = await processImage(imgToProcess);
+  
       const {
-        data: { text: extractedText }
-      } = await Tesseract.recognize(
-        image,
-        language,
-        {
-          logger: m => console.log(m) // Optional: shows OCR progress in console
-        }
-      );
-
-      if (extractedText.trim()) {
-        setText(extractedText);
+        data: { text: rawText }
+      } = await Tesseract.recognize(preprocessed, language, {
+        logger: (m) => console.log(m),
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?\'"-() '
+      });
+  
+      const cleaned = cleanText(rawText);
+  
+      if (cleaned) {
+        setText(cleaned);
       } else {
         setError('No text found.');
       }
@@ -88,8 +120,25 @@ export default function ImageToText() {
       setLoading(false);
     }
   };
-
-
+  
+  const cleanText = (raw) => {
+    return raw
+      .split('\n')
+      .filter(line => {
+        const lower = line.toLowerCase();
+        return (
+          line.trim() !== '' &&
+          !lower.includes('image to text') &&
+          !lower.includes('extract text') &&
+          !lower.includes('.jpg') &&
+          !lower.includes('.png') &&
+          !lower.includes('.jpeg')
+        );
+      })
+      .join(' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
   const handleCopyText = () => {
     navigator.clipboard.writeText(text).then(() => {
       alert('Text copied to clipboard!');
@@ -111,6 +160,7 @@ export default function ImageToText() {
     return () => document.removeEventListener('paste', handlePaste);
   }, []);
 
+
   return (
     <>
       <Helmet>
@@ -130,29 +180,7 @@ export default function ImageToText() {
             <img src="/logo.png" className='max-w-10' alt="" />
             <h1 className="text-3xl font-bold">Pro Image to Text</h1>
           </div>
-          <div className="hidden">
-            <Button onClick={toggleTheme} variant="ghost">
-              {darkMode ? <Sun /> : <Moon />}
-            </Button>
-          </div>
-
         </div>
-
-        <div className="mb-4 hidden">
-          <label className="block mb-1 font-semibold">Language:</label>
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="border rounded px-2 py-1 w-full text-black"
-          >
-            <option value="eng">English</option>
-            <option value="ara">Arabic</option>
-            <option value="spa">Spanish</option>
-            <option value="fra">French</option>
-            <option value="deu">German</option>
-          </select>
-        </div>
-
         <Card
           ref={dropRef}
           onDrop={handleDrop}
