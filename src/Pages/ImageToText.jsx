@@ -211,14 +211,16 @@ export default function ImageToText() {
 
         <h3 className="text-xl font-semibold mb-2">How It Works — See a Demo</h3>
 
-        <div className="flex flex-col md:flex-row md:space-x-6 items-center mb-6">
-          <img
+        <div className="flex flex-col md:space-y-6 items-center mb-6 mt-6">
+        <div className='bg-[#9acfdd] rounded border border-dashed shadow '>
+        <img
             src="/demo-image.png"
             alt="Demo OCR Example"
-            className="w-full md:w-1/2 rounded border"
+            className="w-full md:w-1/3 m-auto"
           />
+        </div>
 
-          <div className="mt-4 md:mt-0 md:w-1/2 bg-gray-100 dark:bg-gray-800 p-4 rounded">
+          <div className="mt-4 md:mt-0 bg-gray-100 dark:bg-gray-800 p-4 rounded w-full">
             <h4 className="font-semibold mb-2">Extracted Text:</h4>
             <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200">
               This is an example text
