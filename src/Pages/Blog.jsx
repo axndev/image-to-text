@@ -17,7 +17,7 @@ const articles = [
     title: "Convert Handwriting to Text Online — Simple and Fast",
     slug: "convert-handwriting-to-text",
     summary: "Got handwritten notes? Learn how to quickly convert handwriting to editable text with ProImageToText.",
-    image: "/images/handwriting-to-text.jpg"
+    image: "/images/handwriting-to-text.png"
   },
   {
     title: "Extract Text from PDFs and Images — Complete Guide",
