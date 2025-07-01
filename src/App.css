@@ -1,18 +1,31 @@
 @import "tailwindcss";
-html, body, #root {
-    height: 100%;
-  }
-@layer base{
-  body{
-    @apply bg-[#eaf7fa]
-  }
-  h2{
-    @apply text-xl md:text-2xl my-4 font-semibold;
-  }
-  ul{
-    @apply space-y-2 list-disc ml-6
-  }
-  ol{
-    @apply list-decimal space-y-2  ml-6
-  }
+
+/* Import Inter for the entire site */
+body {
+  @apply bg-[#eaf7fa] min-h-screen;
+  font-family: 'Inter', sans-serif;
 }
+
+html {
+  @apply min-h-screen;
+}
+
+h1 {
+  @apply text-3xl md:text-4xl font-bold;
+}
+
+h2 {
+  @apply text-xl md:text-2xl my-4 font-semibold;
+}
+
+ul {
+  @apply list-disc ml-6 space-y-2;
+}
+
+ol {
+  @apply list-decimal ml-6 space-y-2;
+}
+h1, h2, h3 {
+  font-family: 'Poppins', sans-serif;
+}
+

@@ -12,6 +12,8 @@ import Blog from './Pages/Blog';
 import Article from './Pages/Article';
 import ReactGA from "react-ga4";
 import { useEffect } from "react";
+import 'primeicons/primeicons.css';
+
 
 // ✅ Initialize GA
 ReactGA.initialize("G-T4N8B78V44");

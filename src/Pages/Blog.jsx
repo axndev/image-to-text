@@ -1,68 +1,64 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const articles = [
-  {
-    title: "How to Convert Images to Text Online for Free (Step-by-Step Guide)",
-    slug: "convert-images-to-text-online",
-    summary: "Learn how to use ProImageToText to extract text from any image or scanned document in seconds.",
-    image: "/images/convert-images-to-text.png"
-  },
-  {
-    title: "Best Free & Paid OCR Tools in 2025 (Comparison)",
-    slug: "best-ocr-tools-2025",
-    summary: "Discover the top free and paid OCR tools available this year and see why ProImageToText is a top pick.",
-    image: "/images/best-ocr-tools.png"
-  },
-  {
-    title: "Convert Handwriting to Text Online — Simple and Fast",
-    slug: "convert-handwriting-to-text",
-    summary: "Got handwritten notes? Learn how to quickly convert handwriting to editable text with ProImageToText.",
-    image: "/images/handwriting-to-text.png"
-  },
-  {
-    title: "Extract Text from PDFs and Images — Complete Guide",
-    slug: "extract-text-from-pdfs-images",
-    summary: "Learn how to extract text from PDF files and images easily with this simple guide and free tools.",
-    image: "/images/extract-text-pdfs-images.jpg"
-  },
-  {
-    title: "5 Ways to Copy Text from a Screenshot (No Typing Needed)",
-    slug: "copy-text-from-screenshot",
-    summary: "Stop typing screenshots manually — here are the best ways to copy text from any image instantly.",
-    image: "/images/copy-text-screenshot.jpg"
-  }
-];
-
 export default function Blog() {
+  const [articles, setArticles] = useState([]);
+
+  useEffect(() => {
+    fetch('/articles.json')
+      .then((res) => res.json())
+      .then((data) => setArticles(data))
+      .catch((err) => console.error('Failed to load articles:', err));
+  }, []);
+
   return (
-    <section className="max-w-5xl mt-5 md:mt-20 mx-auto p-6 prose dark:prose-invert">
-      <h1 className="text-3xl font-bold mb-6">Blog</h1>
-      <ul className="space-y-6 m-0">
-        {articles.map((article) => (
-          <li key={article.slug} className="border-b pb-4 flex flex-col md:flex-row gap-4 items-center">
-            <img
-              src={article.image}
-              alt={article.title}
-              className="w-full md:w-150 md:max-w-80 rounded shadow"
-            />
-            <div className='flex flex-col gap-2'>
-              <Link
-                to={`/blog/${article.slug}`}
-                className="text-xl font-semibold hover:text-[#A8DFE9]"
-              >
-                {article.title}
-              </Link>
-              <p className='mt-2'>{article.summary}</p>
-              <Link
-                to={`/blog/${article.slug}`}
-                className="text-base font-semibold hover:text-[#A8DFE9] bg-[#A8DFE9] max-w-max px-6 py-3 rounded text-white mt-2 hover:bg-[#0f869e]"
-              >
-                Read More
-              </Link>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <section className="max-w-6xl mx-auto px-4 md:px-8 py-12">
+      {/* ✅ Breadcrumbs */}
+      <nav className="text-sm text-gray-500 mb-8">
+        <Link to="/" className="hover:underline text-[#86B3BB]">Home</Link>
+        <span className="mx-2">/</span>
+        <span className="text-gray-700 dark:text-gray-300">Blog</span>
+      </nav>
+
+      <h1 className="text-3xl md:text-4xl font-bold mb-10 text-gray-900 dark:text-white">
+        Blog
+      </h1>
+
+      {articles.length === 0 ? (
+        <p className="text-gray-600 dark:text-gray-400">Loading articles...</p>
+      ) : (
+        <ul className="!space-y-10 !m-0">
+          {articles.map((article) => (
+            <li
+              key={article.slug}
+              className="flex flex-col md:flex-row gap-6 border bg-white border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow hover:shadow-md transition"
+            >
+              <img
+                src={article.image}
+                alt={article.title}
+                className="w-full md:w-72 h-48 md:h-auto object-cover"
+              />
+              <div className="flex flex-col justify-between p-6">
+                <div>
+                  <Link
+                    to={`/blog/${article.slug}`}
+                    className="block text-2xl font-semibold text-gray-900 dark:text-white hover:text-[#0f869e] transition"
+                  >
+                    {article.title}
+                  </Link>
+                  <p className="mt-4 text-gray-700 dark:text-gray-300">{article.summary}</p>
+                </div>
+                <Link
+                  to={`/blog/${article.slug}`}
+                  className="max-w-max inline-flex items-center gap-2 mt-6 text-sm font-semibold bg-[#A8DFE9] text-white px-5 py-3 rounded hover:bg-[#0f869e] transition"
+                >
+                  Read More <i className="pi pi-arrow-right text-base"></i>
+                </Link>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
