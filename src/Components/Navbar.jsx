@@ -10,23 +10,23 @@ export default function Navbar() {
     setIsOpen(false);
   };
 
-  // A helper to make active class easy to reuse
   const linkClass = ({ isActive }) =>
-    `hover:text-[#A8DFE9] ${
+    `block px-4 py-2 rounded-md transition-colors ${
       isActive ? 'text-[#A8DFE9] font-semibold' : 'text-gray-700 dark:text-gray-300'
-    }`;
+    } hover:text-[#A8DFE9]`;
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <NavLink to="/" className="flex-shrink-0 flex items-center gap-3">
+        <div className="flex justify-between h-16 items-center">
+          <NavLink to="/" className="flex items-center gap-3">
             <img src="/logo.png" className="max-w-10" alt="Logo" />
-            <h1 className="!text-2xl font-bold text-gray-900 dark:text-white">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
               ProImageToText
-            </h1>
+            </h3>
           </NavLink>
 
+          {/* Desktop Links */}
           <div className="hidden md:flex space-x-10 items-center">
             <NavLink to="/" className={linkClass}>Home</NavLink>
             <NavLink to="/blog" className={linkClass}>Blog</NavLink>
@@ -36,20 +36,18 @@ export default function Navbar() {
             <NavLink to="/contact" className={linkClass}>Contact</NavLink>
           </div>
 
-          <div className="flex md:hidden items-center">
-            <Button
-              variant="ghost"
-              onClick={() => setIsOpen(!isOpen)}
-              className="!shadow-none !bg-transparent"
-            >
+          {/* Mobile Toggle */}
+          <div className="flex md:hidden">
+            <Button variant="ghost" onClick={() => setIsOpen(!isOpen)} className="!shadow-none !bg-transparent">
               {isOpen ? <X /> : <Menu />}
             </Button>
           </div>
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden px-2 pb-3 space-y-1">
+        <div className="md:hidden absolute top-16 left-0 w-full bg-white dark:bg-gray-900 shadow-md px-2 py-4 z-50 space-y-1">
           <NavLink to="/" onClick={handleLinkClick} className={linkClass}>Home</NavLink>
           <NavLink to="/blog" onClick={handleLinkClick} className={linkClass}>Blog</NavLink>
           <NavLink to="/about" onClick={handleLinkClick} className={linkClass}>About</NavLink>

@@ -14,15 +14,17 @@ export default function Footer() {
           </a>
         </p>
 
-        <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1">
+        <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1 flex-col sm:flex-row">
           Want to support? Hire me for web dev
-          <i className="pi pi-arrow-right text-[#86b3bb]"></i>{' '}
+          <span className="flex gap-1 items-center">
+          <i className="pi pi-arrow-right text-[#86b3bb]"></i>
           <a
             href="mailto:kaleemullahahsan0@gmail.com"
             className="font-medium text-[#86b3bb] hover:underline"
           >
             Email me
           </a>
+          </span>
         </p>
       </div>
     </footer>

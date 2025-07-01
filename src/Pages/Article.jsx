@@ -41,7 +41,7 @@ export default function Article() {
         <span className="text-gray-700 dark:text-gray-300">{article.title}</span>
       </nav>
 
-      <h1 className="text-2xl md:text-4xl font-bold mb-6 text-gray-900 dark:text-white">
+      <h1 className="font-bold mb-6 text-gray-900 dark:text-white">
         {article.title}
       </h1>
 
