@@ -1,69 +1,87 @@
 import Tesseract from 'tesseract.js';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { cn } from '../lib/utils';
-
+import { UploadCloud, Copy, Download, X } from 'lucide-react';
 import { Button } from '../Components/ui/button';
-import { Card, CardContent } from '../Components/ui/card';
-import { Loader2, Copy, UploadCloud, Moon, Sun, Download } from 'lucide-react';
+import { Card } from '../Components/ui/card';
 
 export default function ImageToText() {
-  const [image, setImage] = useState(null);
-  const [text, setText] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [darkMode, setDarkMode] = useState(false);
-
-
-  const dropRef = useRef(null);
+  const [images, setImages] = useState([]);
+  const [extracting, setExtracting] = useState(false);
 
   const handleImageChange = (e) => {
-    setText('');
-    setError('');
-    const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setImage(file);
-      setShowCropper(true); // Open cropper immediately
-    }
+    const files = Array.from(e.target.files);
+    const newImages = files
+      .filter((file) => file.type.startsWith('image/'))
+      .map((file) => ({
+        id: crypto.randomUUID(),
+        file,
+        name: file.name,
+        text: '',
+        loading: false,
+        error: '',
+      }));
+    setImages((prev) => [...prev, ...newImages]);
   };
 
   const handlePaste = (e) => {
     const items = e.clipboardData.items;
+    const pastedImages = [];
     for (let item of items) {
       if (item.type.startsWith('image/')) {
         const file = item.getAsFile();
         if (file) {
-          setImage(file);
-          setShowCropper(true);
+          pastedImages.push({
+            id: crypto.randomUUID(),
+            file,
+            name: file.name || 'pasted-image.png',
+            text: '',
+            loading: false,
+            error: '',
+          });
         }
       }
     }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setImage(file);
-      setShowCropper(true);
+    if (pastedImages.length) {
+      setImages((prev) => [...prev, ...pastedImages]);
     }
   };
 
+  const handleRemove = (id) => {
+    setImages((prev) => prev.filter((img) => img.id !== id));
+  };
+
   const handleDragOver = (e) => e.preventDefault();
-  async function processImage(file) {
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files);
+    const newImages = files
+      .filter((file) => file.type.startsWith('image/'))
+      .map((file) => ({
+        id: crypto.randomUUID(),
+        file,
+        name: file.name,
+        text: '',
+        loading: false,
+        error: '',
+      }));
+    setImages((prev) => [...prev, ...newImages]);
+  };
+
+  const processImage = (file) => {
     return new Promise((resolve) => {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-  
         canvas.width = img.width;
         canvas.height = img.height;
-  
+
+        ctx.filter = 'contrast(150%) brightness(120%)';
         ctx.drawImage(img, 0, 0);
-  
-        // ✅ Convert to grayscale
+
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < imgData.data.length; i += 4) {
           const avg = (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]) / 3;
@@ -71,214 +89,307 @@ export default function ImageToText() {
           imgData.data[i + 1] = avg;
           imgData.data[i + 2] = avg;
         }
-  
-        // ✅ Binarize: simple threshold
-        const threshold = 150;
-        for (let i = 0; i < imgData.data.length; i += 4) {
-          const v = imgData.data[i] > threshold ? 255 : 0;
-          imgData.data[i] = v;
-          imgData.data[i + 1] = v;
-          imgData.data[i + 2] = v;
-        }
-  
+
         ctx.putImageData(imgData, 0, 0);
-  
         canvas.toBlob(resolve);
       };
     });
-  }
-  
-  const handleExtractText = async () => {
-    if (!image && !croppedImage) return alert('Please upload an image.');
-  
-    setLoading(true);
-    setText('');
-    setError('');
-  
-    try {
-      const imgToProcess = croppedImage || image;
-      const preprocessed = await processImage(imgToProcess);
-  
-      const {
-        data: { text: rawText }
-      } = await Tesseract.recognize(preprocessed, language, {
-        logger: (m) => console.log(m),
-        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:;!?\'"-() '
-      });
-  
-      const cleaned = cleanText(rawText);
-  
-      if (cleaned) {
-        setText(cleaned);
-      } else {
-        setError('No text found.');
-      }
-    } catch (err) {
-      console.error(err);
-      setError('Failed to extract text.');
-    } finally {
-      setLoading(false);
-    }
   };
-  
+
   const cleanText = (raw) => {
     return raw
       .split('\n')
-      .filter(line => {
-        const lower = line.toLowerCase();
-        return (
-          line.trim() !== '' &&
-          !lower.includes('image to text') &&
-          !lower.includes('extract text') &&
-          !lower.includes('.jpg') &&
-          !lower.includes('.png') &&
-          !lower.includes('.jpeg')
-        );
-      })
+      .filter((line) => line.trim() !== '')
       .join(' ')
       .replace(/\s+/g, ' ')
       .trim();
   };
-  const handleCopyText = () => {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Text copied to clipboard!');
-    });
+
+  const handleExtractAll = async () => {
+    setExtracting(true);
+
+    for (const img of images) {
+      setImages((prev) =>
+        prev.map((i) =>
+          i.id === img.id ? { ...i, loading: true, text: '', error: '' } : i
+        )
+      );
+
+      try {
+        const preprocessed = await processImage(img.file);
+
+        const {
+          data: { text: rawText },
+        } = await Tesseract.recognize(URL.createObjectURL(preprocessed), 'eng', {
+          logger: (m) => console.log(m),
+        });
+
+        const cleaned = cleanText(rawText);
+
+        setImages((prev) =>
+          prev.map((i) =>
+            i.id === img.id
+              ? {
+                ...i,
+                text: cleaned || '',
+                error: cleaned ? '' : 'No text found.',
+                loading: false,
+              }
+              : i
+          )
+        );
+      } catch (err) {
+        console.error(err);
+        setImages((prev) =>
+          prev.map((i) =>
+            i.id === img.id ? { ...i, error: 'Failed to extract text.', loading: false } : i
+          )
+        );
+      }
+    }
+
+    setExtracting(false);
   };
 
-  const handleDownloadText = () => {
+  const handleCopyText = (text) => {
+    navigator.clipboard.writeText(text).then(() => alert('Copied!'));
+  };
+
+  const handleDownloadText = (text, name) => {
     const blob = new Blob([text], { type: 'text/plain' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'extracted-text.txt';
+    link.download = name ? `${name}-text.txt` : 'extracted-text.txt';
     link.click();
   };
 
-  const toggleTheme = () => setDarkMode(!darkMode);
+  const handleDownloadAll = () => {
+    images.forEach((img) => {
+      if (img.text) {
+        handleDownloadText(img.text, img.name);
+      }
+    });
+  };
 
   useEffect(() => {
     document.addEventListener('paste', handlePaste);
     return () => document.removeEventListener('paste', handlePaste);
   }, []);
 
-
   return (
     <>
       <Helmet>
-        <title>Pro Image to Text - Free Online Image to Text Converter</title>
-        <meta name="description" content="Pro Image to Text is a free online OCR tool that extracts text from images in seconds. Fast, accurate, secure." />
-        <meta name="keywords" content="image to text, online OCR, extract text from image, free OCR tool" />
-        <meta property="og:title" content="Pro Image to Text" />
-        <meta property="og:description" content="Convert images to editable text for free — fast online OCR tool." />
-        <meta property="og:image" content="https://YOUR_DOMAIN/og-image.png" />
-        <meta property="og:url" content="https://YOUR_DOMAIN/" />
-        <meta name="twitter:card" content="summary_large_image" />
+        <title>Pro Image to Text - Multi OCR</title>
       </Helmet>
-      <div className={cn("min-h-auto", darkMode ? "bg-gray-900 mb-10 text-white" : "bg-white text-black") + " max-w-5xl mx-auto p-6 transition-colors duration-300 mt-5 md:mt-20"}>
-        <div className="flex justify-between items-center mb-6 ">
+      <main class="max-w-6xl mx-auto px-4 py-12 space-y-8">
+        <div className=" mx-auto">
+          <h1 className="text-3xl font-bold mb-6">Pro Image to Text</h1>
 
-          <div className="flex-shrink-0 flex items-center gap-3">
-            <img src="/logo.png" className='max-w-10' alt="" />
-            <h1 className="text-3xl font-bold">Pro Image to Text</h1>
-          </div>
-        </div>
-        <Card
-          ref={dropRef}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          className="border-dashed border-2 border-gray-300 p-8 md:p-18 text-center mb-6 cursor-pointer hover:border-[#A8DFE9] transition"
-        >
-          <label className="cursor-pointer block">
-            <UploadCloud className="mx-auto mb-2 text-[#A8DFE9]" size={48} />
-            <span className="block mb-2">Drag & drop, paste with Ctrl+V or click to upload an image</span>
-            <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-          </label>
-        </Card>
-
-        {image && (
-          <Card className="mb-6">
-            <CardContent className="p-4">
-              <img src={URL.createObjectURL(image)} alt="Preview" className="max-w-full h-auto rounded shadow" />
-            </CardContent>
+          <Card
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+            className="border-dashed border-2 !border-[#A8DFE9] p-22 text-center mb-6 cursor-pointer transition"
+          >
+            <label className="cursor-pointer block">
+              <UploadCloud className="mx-auto mb-2 text-[#A8DFE9]" size={48} />
+              <span className="block mb-2">
+                Drag & drop, paste with Ctrl+V or click to <span className='text-[#74b2bd]'>Upload images</span>
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
           </Card>
-        )}
 
-        <div className="flex flex-wrap gap-4 mb-4">
-          <Button onClick={handleExtractText} disabled={loading} className="cursor-pointer !bg-[#A8DFE9]">
-            {loading ? <><Loader2 className="animate-spin mr-2" /> Extracting...</> : 'Extract Text'}
-          </Button>
-          {text && (
-            <>
-              <Button variant="secondary" onClick={handleCopyText}>
-                <Copy className="mr-2" /> Copy Text
-              </Button>
-              <Button variant="secondary" onClick={handleDownloadText}>
-                <Download className="mr-2" /> Download Text
-              </Button>
-            </>
-          )}
-        </div>
+          {images.length > 0 && (
+            <div className='my-10'>
+              <div className="flex flex-wrap gap-2 mb-6 justify-center md:justify-normal">
+                <Button
+                  onClick={() => setImages([])}
+                  className="bg-red-500 text-white"
+                >
+                  Start Over
+                </Button>
+                <Button
+                  onClick={handleDownloadAll}
+                  className="bg-green-500 text-white"
+                >
+                  Download All
+                </Button>
+              </div>
 
-        {text && (
-          <Card>
-            <CardContent className="p-4">
-              <h2 className="font-semibold mb-2">Extracted Text:</h2>
-              <pre className="bg-gray-100 p-4 rounded whitespace-pre-wrap text-sm text-black dark:text-white">{text}</pre>
-            </CardContent>
-          </Card>
-        )}
+              <div className="flex flex-col gap-4 mb-4 bg-white p-6 rounded">
+                {images.map((img) => (
+                  <div
+                    key={img.id}
+                    className="flex items-center gap-4 border border-gray-300 p-5 rounded shadow relative flex-col md:flex-row"
+                  >
+                    <div className="">
+                      <img
+                        src={URL.createObjectURL(img.file)}
+                        className="w-40 md:w-30 h-auto rounded shadow border border-gray-300"
+                        alt=""
+                      />
+                      {/* Hide first X when text exists */}
+                      {!img.text && (
+                        <Button
+                          onClick={() => handleRemove(img.id)}
+                          variant="secondary"
+                          className="absolute top-1/2 right-5 -translate-y-1/2 w-8 h-8 flex items-center justify-center"
+                        >
+                          <X size={20} />
+                        </Button>
+                      )}
+                    </div>
 
-        {error && <div className="mt-4 text-red-600 font-medium">{error}</div>}
-      </div>
-      <section className="max-w-5xl mx-auto md:mt-2 p-6 bg-white dark:bg-gray-900 ">
-        <h2 className="text-2xl font-bold mb-4 md:text-3xl">About Pro Image to Text</h2>
-        <p className="mb-4 text-gray-700 dark:text-gray-300">
-          Pro Image to Text is a free, fast, and accurate online tool that extracts text from images in seconds.
-          Whether it’s a scanned document, handwritten note, or a photo with text, our advanced OCR (Optical Character Recognition)
-          converts it into editable text instantly — no manual typing needed.
-        </p>
+                    <div className="flex-1 ">
+                      <h4 className="font-semibold mb-2">{img.name}</h4>
 
-        <h3 className="text-xl font-semibold mb-2">How It Works — See a Demo</h3>
+                      {img.loading && (
+                        <div className="text-blue-600 font-medium mb-2">
+                          Extracting...
+                        </div>
+                      )}
 
-        <div className="flex flex-col md:space-y-6 items-center mb-6 mt-6">
-        <div className='bg-[#9acfdd] rounded border border-dashed shadow '>
-        <img
-            src="/demo-image.png"
-            alt="Demo OCR Example"
-            className="w-full md:w-1/3 m-auto"
-          />
-        </div>
+                      {img.text && (
+                        <pre className="bg-gray-100 p-4 font-sans text-sm rounded mb-2 whitespace-pre-wrap">
+                          {img.text}
+                        </pre>
+                      )}
 
-          <div className="mt-4 md:mt-0 bg-gray-100 dark:bg-gray-800 p-4 rounded w-full">
-            <h4 className="font-semibold mb-2">Extracted Text:</h4>
-            <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200">
-              This is an example text
-              extracted from the uploaded
-              image using Pro Image to Text.
-            </pre>
-            <div className="flex gap-3 mt-3">
-              <Button variant="secondary">
-                <Copy className="mr-2" size={16} /> Copy Text
-              </Button>
-              <Button variant="secondary">
-                <Download className="mr-2" size={16} /> Download Text
+                      {img.error && (
+                        <div className="text-red-600 font-medium">{img.error}</div>
+                      )}
+
+                      {img.text && (
+                        <div className="flex gap-2 mt-2 items-center">
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleCopyText(img.text)}
+                          >
+                            <Copy className="mr-1" size={16} />
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleDownloadText(img.text, img.name)}
+                          >
+                            <Download className="mr-1" size={16} />
+                          </Button>
+                          {/* ✅ New remove button after result */}
+                          <Button
+                            variant="secondary"
+                            onClick={() => handleRemove(img.id)}
+                            className="w-8 h-8 flex items-center justify-center"
+                          >
+                            <X size={16} />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <Button
+                onClick={handleExtractAll}
+                disabled={extracting}
+                className="!bg-[#A8DFE9] mt-2 m-auto "
+              >
+                {extracting ? 'Extracting...' : 'Extract Text'}
               </Button>
             </div>
-          </div>
+          )}
+
         </div>
+        <section class="mt-12">
+          <h2 class="text-2xl  font-bold mb-4">Was this tool helpful?</h2>
+          <form action="https://formspree.io/f/xqabnwkr" method="POST" class="space-y-4">
+            <div class="flex items-center space-x-4">
+              <label class="flex items-center space-x-2">
+                <input type="radio" name="helpful" value="Yes" required class="accent-[#A8DFE9]" />
+                <span>Yes</span>
+              </label>
+              <label class="flex items-center space-x-2">
+                <input type="radio" name="helpful" value="No" required class="accent-[#A8DFE9]" />
+                <span>No</span>
+              </label>
+            </div>
 
-        <h3 className="text-xl font-semibold mb-2">Why Use Pro Image to Text?</h3>
-        <ul className="list-disc list-inside mb-6 text-gray-700 space-y-1.5 mt-5 dark:text-gray-300">
-          <li><strong>Fast & Accurate:</strong> Get clean, editable text instantly.</li>
-          <li><strong>Supports Multiple Languages:</strong> English, Arabic, Spanish, French, German, and more.</li>
-          <li><strong>Free & Secure:</strong> Your images are never stored or shared.</li>
-          <li><strong>Easy to Use:</strong> Drag & drop, paste, or upload — it just works!</li>
-        </ul>
+            <div>
+              <label for="feedback" class="block mb-1 font-medium">How can we improve it?</label>
+              <textarea id="feedback" name="feedback" rows="4" placeholder="Your feedback..." class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:border-[#A8DFE9]"></textarea>
+            </div>
 
-        <p className="text-gray-700 dark:text-gray-300">
-          No sign-up required. Use Pro Image to Text anywhere, anytime — and boost your productivity now!
-        </p>
-      </section>
+            <button type="submit" class="bg-[#A8DFE9] text-white cursor-pointer font-semibold px-4 py-2 rounded hover:bg-[#87cad6] transition">
+              Submit Feedback
+            </button>
+          </form>
+        </section>
+        <div className='bg-white py-8  px-6 rounded'>
+          <header class="">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Pro Image to Text Converter</h1>
+            <p class="mt-2 text-lg text-gray-700">Copy text from images online for free — fast, secure, and accurate.</p>
+          </header>
+          <section>
+            <h2 class="text-2xl font-bold mb-4">What is Image to Text Conversion?</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Image to Text conversion uses OCR (Optical Character Recognition) technology to transform photos, scanned documents, or screenshots into editable text.
+              Our free tool works with popular formats like JPG, PNG, JPEG, GIF, BMP, TIFF, and WebP.
+            </p>
+          </section>
 
+          <section>
+            <h2 class="text-2xl  font-bold mb-4">How to Copy Text from an Image?</h2>
+            <ol class="list-decimal list-inside text-gray-700 leading-relaxed space-y-2">
+              <li>Upload your image using the upload button or drag & drop it into the input area.</li>
+              <li>Click the <strong>Extract Text</strong> button to process your image.</li>
+              <li>Copy the extracted text to your clipboard or download it as a <code>.txt</code> file.</li>
+            </ol>
+          </section>
+
+          <section>
+            <h2 class="text-2xl  font-bold mb-4">Key Features</h2>
+            <ul class="list-disc list-inside text-gray-700 leading-relaxed space-y-2">
+              <li><strong>Extract Text from Blurry Images:</strong> Get text even from low-resolution or slightly blurred photos.</li>
+              <li><strong>Free and Unlimited:</strong> No sign-up, no hidden costs — convert as many images as you want.</li>
+              <li><strong>Multi-Language Support:</strong> Recognizes text in English, Spanish, Arabic, French, and more.</li>
+              <li><strong>Secure & Private:</strong> We never store your images or extracted text.</li>
+              <li><strong>Copy or Download:</strong> Easily copy your text or save it for later.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 class="text-2xl  font-bold mb-4">Why Use an Image to Text Tool?</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+              A good Image to Text Converter saves you time and effort by turning scanned notes, printed documents, or screenshots into editable text instantly.
+              Here’s why people love it:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 leading-relaxed space-y-2">
+              <li><strong>Students:</strong> Digitize handwritten notes and study materials easily.</li>
+              <li><strong>Professionals:</strong> Extract text from official documents and reports.</li>
+              <li><strong>Content Creators:</strong> Copy quotes or captions from images for reuse.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 class="text-2xl  font-bold mb-4">Safe & Secure</h2>
+            <p class="text-gray-700 leading-relaxed">
+              We care about your privacy. Your uploaded files are never saved or shared — all text extraction happens instantly and securely in your browser.
+            </p>
+          </section>
+
+          <section>
+            <h2 class="text-2xl  font-bold mb-4">Get Started Now</h2>
+            <p class="text-gray-700 leading-relaxed">
+              Skip the hassle of manual typing. Try our free Image to Text tool today and extract text from images in seconds.
+            </p>
+          </section>
+        </div>
+      </main>
     </>
   );
 }

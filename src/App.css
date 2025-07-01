@@ -3,6 +3,9 @@ html, body, #root {
     height: 100%;
   }
 @layer base{
+  body{
+    @apply bg-[#eaf7fa]
+  }
   h2{
     @apply text-xl md:text-2xl my-4 font-semibold;
   }
