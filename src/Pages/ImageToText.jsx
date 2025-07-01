@@ -235,20 +235,19 @@ export default function ImageToText() {
                         alt=""
                       />
                       {/* Hide first X when text exists */}
+                    </div>
+
+                    <div className="flex-1 text-center md:text-left">
+                      <h4 className="font-semibold mb-2">{img.name}</h4>
                       {!img.text && (
                         <Button
                           onClick={() => handleRemove(img.id)}
                           variant="secondary"
-                          className="absolute top-1/2 right-5 -translate-y-1/2 w-8 h-8 flex items-center justify-center"
+                          className="md:absolute m-auto mt-5 md:m-0 top-1/2 right-5 -translate-y-1/2 flex items-center justify-center"
                         >
-                          <X size={20} />
+                         Remove
                         </Button>
                       )}
-                    </div>
-
-                    <div className="flex-1 ">
-                      <h4 className="font-semibold mb-2">{img.name}</h4>
-
                       {img.loading && (
                         <div className="text-blue-600 font-medium mb-2">
                           Extracting...
@@ -329,7 +328,7 @@ export default function ImageToText() {
             </button>
           </form>
         </section>
-        <div className='bg-white py-8  px-6 rounded'>
+        <div className='md:bg-white md:py-8 md:px-6 rounded'>
           <header class="">
             <h1 class="text-3xl md:text-4xl font-bold text-gray-900">Pro Image to Text Converter</h1>
             <p class="mt-2 text-lg text-gray-700">Copy text from images online for free — fast, secure, and accurate.</p>
