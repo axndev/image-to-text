@@ -36,7 +36,7 @@ export default function Blog() {
               <img
                 src={article.image}
                 alt={article.title}
-                className="w-full md:w-72 h-48 md:h-auto object-cover"
+                className="w-full md:w-72 h-65 md:h-auto object-cover object-center"
               />
               <div className="flex flex-col justify-between p-6">
                 <div>
