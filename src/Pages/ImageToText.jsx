@@ -1,9 +1,7 @@
 import Tesseract from 'tesseract.js';
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import { UploadCloud, Copy, Download, X } from 'lucide-react';
 import { Button } from '../Components/ui/button';
-import { Card } from '../Components/ui/card';
 
 export default function ImageToText() {
   const [images, setImages] = useState([]);
@@ -201,7 +199,7 @@ export default function ImageToText() {
           >
             <label className="cursor-pointer block">
               {/* <UploadCloud className="mx-auto mb-4 text-[#A8DFE9]" size={56} /> */}
-              <img src="/cloud.png" className='max-w-20 m-auto mb-5' alt="" />
+              <img src="/cloud.png" className='max-w-17 m-auto mb-5' alt="" />
               <span className="block mb-2 text-gray-700">
                 Drag & drop, paste with Ctrl+V or click to{' '}
                 <span className="text-[#74b2bd] font-semibold underline">Upload images</span>
