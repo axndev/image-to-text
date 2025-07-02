@@ -2,6 +2,7 @@ import Tesseract from 'tesseract.js';
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { Button } from '../Components/ui/button';
+import { X, Copy, Download } from 'lucide-react';
 
 export default function ImageToText() {
   const [images, setImages] = useState([]);
