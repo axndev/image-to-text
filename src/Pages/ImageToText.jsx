@@ -1,6 +1,6 @@
-import Tesseract from 'tesseract.js';
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
+import Tesseract from 'tesseract.js';
 import { Button } from '../Components/ui/button';
 import { X, Copy, Download } from 'lucide-react';
 
@@ -78,9 +78,11 @@ export default function ImageToText() {
         canvas.width = img.width;
         canvas.height = img.height;
 
+        // Improve contrast & brightness for OCR
         ctx.filter = 'contrast(150%) brightness(120%)';
         ctx.drawImage(img, 0, 0);
 
+        // Convert to grayscale
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < imgData.data.length; i += 4) {
           const avg = (imgData.data[i] + imgData.data[i + 1] + imgData.data[i + 2]) / 3;
@@ -88,21 +90,23 @@ export default function ImageToText() {
           imgData.data[i + 1] = avg;
           imgData.data[i + 2] = avg;
         }
-
         ctx.putImageData(imgData, 0, 0);
-        canvas.toBlob(resolve);
+
+        canvas.toBlob((blob) => {
+          resolve(blob);
+          URL.revokeObjectURL(img.src); // Clean up URL
+        });
       };
     });
   };
 
-  const cleanText = (raw) => {
-    return raw
+  const cleanText = (raw) =>
+    raw
       .split('\n')
       .filter((line) => line.trim() !== '')
       .join(' ')
       .replace(/\s+/g, ' ')
       .trim();
-  };
 
   const handleExtractAll = async () => {
     setExtracting(true);
@@ -115,13 +119,14 @@ export default function ImageToText() {
       );
 
       try {
-        const preprocessed = await processImage(img.file);
+        const preprocessedBlob = await processImage(img.file);
+        const preprocessedURL = URL.createObjectURL(preprocessedBlob);
 
-        const {
-          data: { text: rawText },
-        } = await Tesseract.recognize(URL.createObjectURL(preprocessed), 'eng', {
+        const { data: { text: rawText } } = await Tesseract.recognize(preprocessedURL, 'eng', {
           logger: (m) => console.log(m),
         });
+
+        URL.revokeObjectURL(preprocessedURL);
 
         const cleaned = cleanText(rawText);
 
@@ -129,11 +134,11 @@ export default function ImageToText() {
           prev.map((i) =>
             i.id === img.id
               ? {
-                ...i,
-                text: cleaned || '',
-                error: cleaned ? '' : 'No text found.',
-                loading: false,
-              }
+                  ...i,
+                  text: cleaned || '',
+                  error: cleaned ? '' : 'No text found.',
+                  loading: false,
+                }
               : i
           )
         );
@@ -179,7 +184,12 @@ export default function ImageToText() {
     <>
       <Helmet>
         <title>Pro Image to Text - Multi OCR</title>
+        <meta
+          name="description"
+          content="Copy text from images for free, fast & secure OCR tool."
+        />
       </Helmet>
+
       <main className="max-w-6xl md:mx-auto space-y-10 md:p-10 px-5 py-10 md:mt-15 mt-5 mx-2 bg-white rounded shadow">
         {/* Hero */}
         <header className="text-center">
@@ -191,7 +201,7 @@ export default function ImageToText() {
           </p>
         </header>
 
-        {/* Upload Card */}
+        {/* Upload */}
         <section className="text-center">
           <div
             onDrop={handleDrop}
@@ -199,11 +209,12 @@ export default function ImageToText() {
             className="border-2 border-dashed border-[#A8DFE9] p-12 rounded-lg hover:border-cyan-500 transition-colors cursor-pointer"
           >
             <label className="cursor-pointer block">
-              {/* <UploadCloud className="mx-auto mb-4 text-[#A8DFE9]" size={56} /> */}
-              <img src="/cloud.png" className='max-w-17 m-auto mb-5' alt="" />
+              <img src="/cloud.png" className="max-w-17 m-auto mb-5" alt="Upload cloud" />
               <span className="block mb-2 text-gray-700">
                 Drag & drop, paste with Ctrl+V or click to{' '}
-                <span className="text-[#74b2bd] font-semibold underline">Upload images</span>
+                <span className="text-[#74b2bd] font-semibold underline">
+                  Upload images
+                </span>
               </span>
               <input
                 type="file"
@@ -284,11 +295,7 @@ export default function ImageToText() {
                           </Button>
                         </>
                       )}
-
-                      <Button
-                        variant="secondary"
-                        onClick={() => handleRemove(img.id)}
-                      >
+                      <Button variant="secondary" onClick={() => handleRemove(img.id)}>
                         <X className="mr-1" size={16} /> Remove
                       </Button>
                     </div>
@@ -350,9 +357,8 @@ export default function ImageToText() {
               Submit Feedback
             </button>
           </form>
-        </section>
-
-        {/* Info Sections */}
+          </section>
+          {/* Info Sections */}
         <section className="space-y-12 ">
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">What is Image to Text Conversion?</h2>
@@ -412,7 +418,6 @@ export default function ImageToText() {
           </div>
         </section>
       </main>
-
     </>
   );
 }
