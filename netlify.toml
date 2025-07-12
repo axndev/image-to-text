@@ -11,7 +11,7 @@
   from = "/robots.txt"
   to = "/robots.txt"
   status = 200
-
+# Force redirect Netlify subdomain → .com
 # ✅ Force all Netlify subdomain traffic to .com
 [[redirects]]
   from = "https://proimagetotext.netlify.app/*"
