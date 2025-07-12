@@ -25,14 +25,14 @@ export default defineConfig({
         name: 'Pro Image to Text - Multi OCR',
         short_name: 'Pro Image to Text',
         description: 'Copy text from images for free, fast & secure OCR tool.',
-        theme_color: '#eaf7fa',
+        theme_color: '#ffff',
         background_color: '#eaf7fa',
         display: 'standalone',
         start_url: '/',
         icons: [
           {
             src: 'favicon.png',
-            sizes: '512x512',
+            sizes: '510x429',
             type: 'image/png',
             purpose: 'any maskable'
           }
