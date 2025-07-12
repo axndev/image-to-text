@@ -12,6 +12,13 @@
   to = "/robots.txt"
   status = 200
 
+# ✅ Force all Netlify subdomain traffic to .com
+[[redirects]]
+  from = "https://proimagetotext.netlify.app/*"
+  to = "https://proimagetotext.com/:splat"
+  status = 301
+  force = true
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
