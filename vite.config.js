@@ -31,8 +31,8 @@ export default defineConfig({
         start_url: '/',
         icons: [
           {
-            src: 'favicon.png',
-            sizes: '510x429',
+            src: 'app.png',
+            sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable'
           }
