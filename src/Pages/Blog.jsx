@@ -47,7 +47,7 @@ export default function Blog() {
       {articles.length === 0 ? (
         <p className="text-gray-600 dark:text-gray-400">Loading articles...</p>
       ) : (
-        <ul className="space-y-10 m-0">
+        <ul className="space-y-15 !m-0">
           {articles.map((article) => (
             <li
               key={article.slug}

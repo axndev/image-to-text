@@ -10,7 +10,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="font-medium text-[#86b3bb] hover:underline"
           >
-            kaleemweb.netlify.app
+            Kaleemullah Ahsan
           </a>
         </p>
 
