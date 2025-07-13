@@ -338,15 +338,17 @@ export default function ImageToText() {
             </div>
 
             <div>
-              <label htmlFor="feedback" className="block mb-1 font-medium">
+              <label htmlFor="feedback" className="block mb-1 font-medium" required>
                 How can we improve it?
               </label>
+              <input type="email" required name='email' id='email' placeholder='Email' className='w-full border border-gray-300 rounded p-2 my-3 focus:outline-none focus:ring focus:border-[#A8DFE9]'/>
               <textarea
                 id="feedback"
+                required
                 name="feedback"
                 rows="4"
                 placeholder="Your feedback..."
-                className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring focus:border-[#A8DFE9]"
+                className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring focus:border-[#A8DFE9] "
               ></textarea>
             </div>
 
