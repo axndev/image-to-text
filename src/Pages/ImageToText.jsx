@@ -386,28 +386,28 @@ export default function ImageToText() {
             <h2 className="text-2xl font-bold text-center">Frequently Asked Questions</h2>
 
             <div className="space-y-4">
-              <details className="border border-gray-200 rounded p-4">
+              <details className="border border-gray-200 rounded md:p-4 p-2 ">
                 <summary className="cursor-pointer font-medium">Is Pro Image to Text free to use?</summary>
                 <p className="mt-2 text-gray-700">
                   Yes! It’s 100% free and unlimited. No account required, no hidden costs.
                 </p>
               </details>
 
-              <details className="border border-gray-200 rounded p-4">
+              <details className="border border-gray-200 rounded md:p-4 p-2 ">
                 <summary className="cursor-pointer font-medium">Is my data safe?</summary>
                 <p className="mt-2 text-gray-700">
                   Absolutely. All images and text are processed locally in your browser. We don’t store or share your files.
                 </p>
               </details>
 
-              <details className="border border-gray-200 rounded p-4">
+              <details className="border border-gray-200 rounded md:p-4 p-2 ">
                 <summary className="cursor-pointer font-medium">What image formats are supported?</summary>
                 <p className="mt-2 text-gray-700">
                   Common formats like JPG, PNG, GIF, BMP, TIFF, and WebP are all supported.
                 </p>
               </details>
 
-              <details className="border border-gray-200 rounded p-4">
+              <details className="border border-gray-200 rounded md:p-4 p-2 ">
                 <summary className="cursor-pointer font-medium">Can I use it offline?</summary>
                 <p className="mt-2 text-gray-700">
                   Yes! You can install Pro Image to Text as a PWA (Progressive Web App) and use it offline anytime.
