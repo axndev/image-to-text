@@ -307,6 +307,7 @@ export default function ImageToText() {
                 id="feedback"
                 name="feedback"
                 rows="4"
+                required 
                 placeholder="Your feedback..."
                 className="w-full border border-gray-300 rounded p-3 focus:outline-none focus:ring focus:border-[#A8DFE9]"
               ></textarea>
