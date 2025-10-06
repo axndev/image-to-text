@@ -1,12 +1,3 @@
-
----
-
-## 🖼️ **3. image-to-text**
-**GitHub Description:**  
-A free online image-to-text (OCR) web app that extracts text from images using AI. Built for speed and accuracy.
-
-### `README.md`
-```markdown
 # Image to Text (OCR Web App)
 
 A web-based OCR tool that converts images into editable text. Upload any image and instantly get readable text output.
