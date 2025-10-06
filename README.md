@@ -1,36 +1,33 @@
-# ProImageToText
-
-**ProImageToText** is a free, modern online OCR (Optical Character Recognition) tool that converts images to editable text in seconds. Built with React and Tesseract.js, this simple web app helps users extract text from scanned documents, screenshots, handwritten notes, and more — with just a few clicks.
 
 ---
 
-## 🚀 Features
+## 🖼️ **3. image-to-text**
+**GitHub Description:**  
+A free online image-to-text (OCR) web app that extracts text from images using AI. Built for speed and accuracy.
 
-- ✅ Drag & Drop, Paste or Upload images  
-- ✅ Crop images before extracting text  
-- ✅ Supports multiple languages (English, Arabic, Spanish, French, German)  
-- ✅ Download or copy extracted text instantly  
-- ✅ Clean, responsive UI (Dark Mode included)  
-- ✅ Google Analytics integration for tracking  
-- ✅ SEO meta tags with `react-helmet`  
-- ✅ Built with modern React best practices  
+### `README.md`
+```markdown
+# Image to Text (OCR Web App)
 
----
+A web-based OCR tool that converts images into editable text. Upload any image and instantly get readable text output.
 
-## 📸 Demo
+## 🧠 Tech Stack
+- Next.js / React
+- Node.js (API)
+- Tesseract.js (OCR)
+- Tailwind CSS
+- Vercel Deployment
 
-![Demo Screenshot](/public/demo-image.png)  
-Try it live: [https://proimagetotext.netlify.app/](https://proimagetotext.netlify.app/)
+## 🔍 Features
+- Drag & drop image upload
+- Copy / Download extracted text
+- Supports JPG, PNG, WEBP
+- Fast OCR performance
+- Works directly in browser
 
----
-
-## ⚙️ Tech Stack
-
-- **Frontend:** React, Vite (or CRA), Tailwind CSS / custom CSS
-- **OCR Engine:** [Tesseract.js](https://github.com/naptha/tesseract.js)
-- **Routing:** `react-router-dom`
-- **SEO:** `react-helmet`
-- **Analytics:** Google Analytics 4 (`react-ga4`)
-
----
-
+## ⚙️ Setup
+```bash
+git clone https://github.com/axndev/image-to-text.git
+cd image-to-text
+npm install
+npm run dev
